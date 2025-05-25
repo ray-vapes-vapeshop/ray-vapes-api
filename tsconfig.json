@@ -3,6 +3,7 @@
     "incremental": true,
     "target": "es2016",
     "module": "commonjs",
+    "moduleResolution": "node",
     "allowJs": true,
     "sourceMap": true,
     "outDir": "./build",
@@ -11,7 +12,6 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
     "strict": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
@@ -34,10 +34,6 @@
     "allowUnreachableCode": false,
     "skipLibCheck": true
   },
-  "include": [
-    "**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules"]
 }
