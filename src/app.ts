@@ -1,30 +1,28 @@
-import * as Sentry from "@sentry/node";
+import cors from "cors";
 import express from "express";
-import swaggerUi from "swagger-ui-express";
-import { globalErrorHandler } from "./middlewares/error.middleware";
+
 import routes from "./routes";
-import swaggerDocument from "./swagger";
+import { setupSwagger } from "./config/providers/swagger-config.provider";
+import { globalErrorHandler } from "./middlewares/error.middleware";
 
 const app = express();
 
-/**
- * @swagger
- * /debug-sentry:
- *   get:
- *     summary: Debug Sentry endpoint.
- *     tags: [Debug]
- *     responses:
- *       500:
- *         description: Internal Server Error
- */
-app.get("/debug-sentry", () => {
-  throw new Error("My first Sentry error!");
-});
+app.use(
+  cors({
+    origin: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
+
+app.set("trust proxy", true);
+
+app.use(express.json());
 
 app.use("/api", routes);
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-Sentry.setupExpressErrorHandler(app);
+setupSwagger(app);
+
 app.use(globalErrorHandler);
 
 export default app;
