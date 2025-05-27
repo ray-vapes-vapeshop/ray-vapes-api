@@ -6,6 +6,7 @@ import { Operation } from "../../types/swagger-operation.type";
 import swaggerDocumentType from "../../swagger";
 import env from "../../env";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const swaggerDocument: any = swaggerDocumentType;
 
 const adminPassword = env.ADMIN_PASSWORD || "admin";

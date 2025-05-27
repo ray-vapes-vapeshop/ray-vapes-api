@@ -6,3 +6,155 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum ChargingType {
+  TYPE_C
+  MICRO_USB
+  NONE
+}
+
+enum FlavourMode {
+  SINGLE
+  TWO_IN_ONE
+  THREE_IN_ONE
+}
+
+enum ProductType {
+  ELECTRONIC_CIGARETTE
+  CIGARETTE
+  SNUS
+  LIQUID
+}
+
+enum Unit {
+  PIECE
+  PACK
+  BLOCK
+  CAN
+  BOTTLE
+}
+
+model Product {
+  id             String          @id @default(uuid()) @db.Uuid
+  name           String
+  type           ProductType
+  description    String?
+  imageUrl       String?         @map("image_url")
+  isBestseller   Boolean         @default(false) @map("is_bestseller")
+  electronicSpec ElectronicSpec?
+  liquidSpec     LiquidSpec?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  priceTiers PriceTier[]
+  stockItems StockItem[]
+
+  @@index([name])
+  @@map("products")
+}
+
+model PriceTier {
+  id         String @id @default(uuid()) @db.Uuid
+  productId  String @map("product_id") @db.Uuid
+  unit       Unit
+  quantity   Int?
+  priceCents Int    @map("price_cents")
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, unit])
+  @@index([productId])
+  @@map("price_tiers")
+}
+
+model StockItem {
+  id        String @id @default(uuid()) @db.Uuid
+  productId String @map("product_id") @db.Uuid
+  unit      Unit
+  quantity  Int
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, unit])
+  @@index([productId])
+  @@map("stock_items")
+}
+
+// * ELECTRONIC CIGARETTES ////////////////////////////////////
+
+model ElectronicSpec {
+  id           String       @id @default(uuid()) @db.Uuid
+  productId    String       @map("product_id") @db.Uuid
+  puffs        Int
+  nicotinePct  Float        @map("nicotine_pct")
+  chargingType ChargingType @map("charging_type")
+  flavourMode  FlavourMode  @map("flavour_mode")
+
+  variants ElectronicVariant[]
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId])
+  @@index([productId])
+  @@map("electronic_specs")
+}
+
+model ElectronicVariant {
+  id         String @id @default(uuid()) @db.Uuid
+  specId     String @map("spec_id") @db.Uuid
+  flavourId  String @map("flavour_id") @db.Uuid
+  priceCents Int    @map("price_cents")
+  stock      Int
+
+  spec    ElectronicSpec @relation(fields: [specId], references: [id])
+  flavour Flavour        @relation(fields: [flavourId], references: [id])
+
+  @@map("electronic_variants")
+}
+
+// * LIQUIDS //////////////////////////////////////////////////
+
+model LiquidSpec {
+  id          String @id @default(uuid()) @db.Uuid
+  productId   String @map("product_id") @db.Uuid
+  bottleMl    Int    @map("bottle_ml")
+  nicotinePct Float? @map("nicotine_pct")
+
+  variants LiquidVariant[]
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId])
+  @@index([productId])
+  @@map("liquid_specs")
+}
+
+model LiquidVariant {
+  id         String @id @default(uuid()) @db.Uuid
+  specId     String @map("spec_id") @db.Uuid
+  flavourId  String @map("flavour_id") @db.Uuid
+  priceCents Int    @map("price_cents")
+  stock      Int
+
+  spec    LiquidSpec @relation(fields: [specId], references: [id])
+  flavour Flavour    @relation(fields: [flavourId], references: [id])
+
+  @@map("liquid_variants")
+}
+
+// * FLAVOURS /////////////////////////////////////////////////
+
+model Flavour {
+  id   String @id @default(uuid()) @db.Uuid
+  name String @unique
+
+  electronicVariants ElectronicVariant[]
+  liquidVariants     LiquidVariant[]
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([name])
+  @@map("flavours")
+}
