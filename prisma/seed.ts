@@ -110,10 +110,30 @@ async function seed() {
 
     const flavoursTornadoFivePercents = [
       "Blueberry Raspberry",
-      "Pink lemonade",
-      "Watermelon ice",
+      "Pink Lemonade",
+      "Watermelon Ice",
       "Kiwi Passion Guava",
       "Blueberry Pomegranate",
+    ];
+
+    const flavoursVozolRave40k = [
+      "Cherry Strawberry",
+      "Strawberry Kiwi",
+      "Blueberry Watermelon",
+      "Peach Raspberry Lemonade",
+      "Double Apple",
+    ];
+
+    const flavoursWaspeTriple60k = [
+      "Blueberry Ice + Black Dragon Ice + Fizzy Cherry Ice",
+      "Strawberry Raspberry Cherry + Love 666 + Cherry Candy Ice",
+    ];
+
+    const flavoursVozolShisha25k = [
+      "Frozen Strawberry Kiwi",
+      "Dragon Fruit Banana Cherry",
+      "Cherry Ice",
+      "Blueberry Watermelon",
     ];
 
     const elfBarRayaFlavours = await upsertFlavours(flavoursElfBarRaya);
@@ -125,6 +145,9 @@ async function seed() {
     const zooyVapeFlavours = await upsertFlavours(flavoursZOOYVape);
     const tornadoTwoPctFlavours = await upsertFlavours(flavoursTornadoTwoPercents);
     const tornadoFivePctFlavours = await upsertFlavours(flavoursTornadoFivePercents);
+    const vozolRave40kFlavours = await upsertFlavours(flavoursVozolRave40k);
+    const waspeTriple60kFlavours = await upsertFlavours(flavoursWaspeTriple60k);
+    const vozolShisha25kFlavours = await upsertFlavours(flavoursVozolShisha25k);
 
     async function createElectronicProduct({
       name,
@@ -232,7 +255,7 @@ async function seed() {
     await createElectronicProduct({
       name: "ElfBar Combo 25k",
       imageUrl:
-        "https://shopodrom.com.ua/content/images/21/310x310l85nn0/elf-bar-combo-25000.-vynohrad-meri-drink-grape-mary-drink-73338160978261.jpg",
+        "https://mypodseurope.com/assets/uploads/product_small/elf-bar-combo-lime-pineapple.webp",
       puffs: 25000,
       nicotinePct: 5,
       chargingType: ChargingType.TYPE_C,
@@ -277,8 +300,7 @@ async function seed() {
 
     await createElectronicProduct({
       name: "Tornado 5%",
-      imageUrl:
-        "https://www.eazyvapes.co.uk/cdn/shop/files/cherry_15k_fumot_randm_tornado_15k.jpg?v=1732098729&width=1920",
+      imageUrl: "https://www.eazyvapes.co.uk/cdn/shop/files/cherry_15k_fumot_randm_tornado_15k.jpg",
       puffs: 15000,
       nicotinePct: 5,
       chargingType: ChargingType.TYPE_C,
@@ -286,23 +308,74 @@ async function seed() {
       priceEuro: 17,
       flavours: tornadoFivePctFlavours,
     });
+
+    await createElectronicProduct({
+      name: "Vozol Rave 40k",
+      imageUrl: "https://vapepenb2b.com/cdn/shop/files/VOZOLRave40000-2.jpg",
+      puffs: 40000,
+      nicotinePct: 5,
+      chargingType: ChargingType.TYPE_C,
+      flavourMode: FlavourMode.SINGLE,
+      priceEuro: 30,
+      flavours: vozolRave40kFlavours,
+    });
+
+    await createElectronicProduct({
+      name: "Waspe Triple 60k",
+      imageUrl: "https://vapepenb2b.com/cdn/shop/files/WASPE__3_in_1_60000_puffs_8.jpg",
+      puffs: 60000,
+      nicotinePct: 5,
+      chargingType: ChargingType.TYPE_C,
+      flavourMode: FlavourMode.THREE_IN_ONE,
+      priceEuro: 45,
+      flavours: waspeTriple60kFlavours,
+    });
+
+    await createElectronicProduct({
+      name: "Vozol Shisha 25k",
+      imageUrl: "https://www.vapehouseuk.com/cdn/shop/files/vozol-25000.jpg",
+      puffs: 25000,
+      nicotinePct: 5,
+      chargingType: ChargingType.TYPE_C,
+      flavourMode: FlavourMode.SINGLE,
+      priceEuro: 27,
+      flavours: vozolShisha25kFlavours,
+    });
     //#endregion
 
     //#region Snus seeding
-    async function createSnusProduct({
+    async function upsertSnusFlavours(names: string[]) {
+      const records = [];
+      for (const name of names) {
+        const flavour = await prisma.flavour.upsert({
+          where: { name },
+          update: {},
+          create: { name },
+        });
+        records.push(flavour);
+      }
+      return records;
+    }
+
+    const flavoursIceberg150MgCaffeine = ["Watermelon mint", "Arsaka", "Sweet mint"];
+    const iceberg150MgCaffeineFlavours = await upsertSnusFlavours(flavoursIceberg150MgCaffeine);
+
+    async function createSimpleSnusProduct({
       name,
       priceEuro,
-      capacity,
+      stock,
+      nicotineMg,
       imageUrl,
     }: {
       name: string;
       priceEuro: number;
-      capacity: number;
+      stock: number;
+      nicotineMg: number;
       imageUrl?: string;
     }) {
       const priceCents = Math.round(priceEuro * 100);
 
-      const product = await prisma.product.create({
+      return await prisma.product.create({
         data: {
           name,
           type: ProductType.SNUS,
@@ -314,35 +387,99 @@ async function seed() {
           },
           stockItems: {
             createMany: {
-              data: [{ unit: Unit.PACK, quantity: capacity }],
+              data: [{ unit: Unit.PACK, quantity: stock }],
+            },
+          },
+          snusSpec: {
+            create: {
+              nicotineMg,
             },
           },
         },
       });
-      return product;
     }
 
-    await createSnusProduct({
+    async function createSnusWithFlavours({
+      name,
+      priceEuro,
+      nicotineMg,
+      flavours,
+      stock,
+      imageUrl,
+    }: {
+      name: string;
+      priceEuro: number;
+      nicotineMg: number;
+      flavours: typeof iceberg150MgCaffeineFlavours;
+      stock: number;
+      imageUrl?: string;
+    }) {
+      const priceCents = Math.round(priceEuro * 100);
+
+      return await prisma.product.create({
+        data: {
+          name,
+          type: ProductType.SNUS,
+          imageUrl: imageUrl ?? null,
+          priceTiers: {
+            createMany: {
+              data: [{ unit: Unit.PACK, priceCents }],
+            },
+          },
+          stockItems: {
+            createMany: {
+              data: [{ unit: Unit.PACK, quantity: stock * flavours.length }],
+            },
+          },
+          snusSpec: {
+            create: {
+              nicotineMg,
+              variants: {
+                create: flavours.map((flavour) => ({
+                  flavourId: flavour.id,
+                  priceCents,
+                  stock,
+                })),
+              },
+            },
+          },
+        },
+      });
+    }
+
+    await createSimpleSnusProduct({
       name: "Iceberg apple pie 50 mg",
       priceEuro: 12,
-      capacity: 40,
+      stock: 40,
+      nicotineMg: 50,
       imageUrl: "https://europesnus.com/cdn/shop/files/KopiafIcebergMaxHitMixpack.png",
     });
 
-    await createSnusProduct({
+    await createSimpleSnusProduct({
       name: "Iceberg 50 mg",
       priceEuro: 9,
-      capacity: 20,
+      stock: 20,
+      nicotineMg: 50,
       imageUrl:
         "https://thepodblock.co.uk/wp-content/uploads/2023/05/Iceberg_Ultra_Black_150mg_snus-nicotine-pouches-the-pod-block.jpg",
     });
 
-    await createSnusProduct({
+    await createSimpleSnusProduct({
       name: "Pablo 50 mg",
       priceEuro: 10,
-      capacity: 20,
+      stock: 20,
+      nicotineMg: 50,
       imageUrl:
         "https://goodsnus.in.ua/files/resized/products/pablo-exclusive-strawberry-cheesecake-50-mg-g.700x800.jpg",
+    });
+
+    await createSnusWithFlavours({
+      name: "Iceberg 150 mg caffeine",
+      priceEuro: 5,
+      nicotineMg: 150,
+      flavours: iceberg150MgCaffeineFlavours,
+      stock: 20,
+      imageUrl: "https://nicopods.ie/wp-content/uploads/2023/08/Iceberg-Emerald-Snus.webp",
     });
     //#endregion
 
