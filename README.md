@@ -12,6 +12,29 @@ npm run db:migrate
 npm run dev
 ```
 
+## Database Seeding
+
+> <span style="color: red; font-weight: bold;">! important:</span> First, ensure Docker Desktop is running
+>
+> Then start the development server with docker container for PostgreSQL:
+
+```sh
+npm run start:dev
+```
+
+> <span style="color: red; font-weight: bold;">! important:</span> To avoid duplications when re-seeding, follow these steps:
+
+```sh
+# 1. Reset the database (this will clear all existing data)
+npx prisma migrate reset --force
+
+# 2. Apply migrations
+npm run db:migrate
+
+# 3. Seed the database with initial data
+npm run db:seed
+```
+
 ## Linting/Formatting
 
 ```sh
