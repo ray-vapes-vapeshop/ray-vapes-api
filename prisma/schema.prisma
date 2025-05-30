@@ -43,6 +43,7 @@ model Product {
   isBestseller   Boolean         @default(false) @map("is_bestseller")
   electronicSpec ElectronicSpec?
   liquidSpec     LiquidSpec?
+  snusSpec       SnusSpec?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -143,6 +144,35 @@ model LiquidVariant {
   @@map("liquid_variants")
 }
 
+// * SNUS /////////////////////////////////////////////////////
+
+model SnusSpec {
+  id         String @id @default(uuid()) @db.Uuid
+  productId  String @map("product_id") @db.Uuid
+  nicotineMg Float  @map("nicotine_mg")
+
+  variants SnusVariant[]
+
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([productId])
+  @@index([productId])
+  @@map("snus_specs")
+}
+
+model SnusVariant {
+  id         String @id @default(uuid()) @db.Uuid
+  specId     String @map("spec_id") @db.Uuid
+  flavourId  String @map("flavour_id") @db.Uuid
+  priceCents Int    @map("price_cents")
+  stock      Int
+
+  spec    SnusSpec @relation(fields: [specId], references: [id])
+  flavour Flavour  @relation(fields: [flavourId], references: [id])
+
+  @@map("snus_variants")
+}
+
 // * FLAVOURS /////////////////////////////////////////////////
 
 model Flavour {
@@ -151,6 +181,7 @@ model Flavour {
 
   electronicVariants ElectronicVariant[]
   liquidVariants     LiquidVariant[]
+  snusVariants       SnusVariant[]
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
