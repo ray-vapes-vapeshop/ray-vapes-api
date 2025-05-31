@@ -15,4 +15,12 @@ export class ProductsController {
 
     res.json(new SuccessResponseDto(products));
   }
+
+  async getProductById(req: Request, res: Response) {
+    const productId = req.params["id"];
+
+    const product = await this.productsService.getProductById(productId!);
+
+    res.json(new SuccessResponseDto(product));
+  }
 }
