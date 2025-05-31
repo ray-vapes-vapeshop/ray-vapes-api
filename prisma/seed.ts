@@ -158,6 +158,7 @@ async function seed() {
       flavourMode,
       priceEuro,
       flavours,
+      isBestseller = false,
     }: {
       name: string;
       imageUrl: string;
@@ -167,6 +168,7 @@ async function seed() {
       flavourMode: FlavourMode;
       priceEuro: number;
       flavours: typeof elfBarRayaFlavours;
+      isBestseller?: boolean;
     }) {
       const priceCents = Math.round(priceEuro * 100);
 
@@ -175,6 +177,7 @@ async function seed() {
           name,
           type: ProductType.ELECTRONIC_CIGARETTE,
           imageUrl,
+          isBestseller,
           electronicSpec: {
             create: {
               puffs,
@@ -215,6 +218,7 @@ async function seed() {
       flavourMode: FlavourMode.SINGLE,
       priceEuro: 28,
       flavours: elfBarRayaFlavours,
+      isBestseller: true,
     });
 
     await createElectronicProduct({
@@ -227,6 +231,7 @@ async function seed() {
       flavourMode: FlavourMode.SINGLE,
       priceEuro: 25,
       flavours: vozolVistaFlavours,
+      isBestseller: true,
     });
 
     await createElectronicProduct({
@@ -285,6 +290,7 @@ async function seed() {
       flavourMode: FlavourMode.TWO_IN_ONE,
       priceEuro: 20,
       flavours: zooyVapeFlavours,
+      isBestseller: true,
     });
 
     await createElectronicProduct({
@@ -366,12 +372,14 @@ async function seed() {
       stock,
       nicotineMg,
       imageUrl,
+      isBestseller = false,
     }: {
       name: string;
       priceEuro: number;
       stock: number;
       nicotineMg: number;
       imageUrl?: string;
+      isBestseller?: boolean;
     }) {
       const priceCents = Math.round(priceEuro * 100);
 
@@ -380,6 +388,7 @@ async function seed() {
           name,
           type: ProductType.SNUS,
           imageUrl: imageUrl ?? null,
+          isBestseller,
           priceTiers: {
             createMany: {
               data: [{ unit: Unit.PACK, priceCents }],
@@ -462,6 +471,7 @@ async function seed() {
       nicotineMg: 50,
       imageUrl:
         "https://thepodblock.co.uk/wp-content/uploads/2023/05/Iceberg_Ultra_Black_150mg_snus-nicotine-pouches-the-pod-block.jpg",
+      isBestseller: true,
     });
 
     await createSimpleSnusProduct({
@@ -523,6 +533,7 @@ async function seed() {
       priceEuro,
       flavours,
       stockQuantity,
+      isBestseller = false,
     }: {
       name: string;
       imageUrl?: string;
@@ -531,6 +542,7 @@ async function seed() {
       priceEuro: number;
       flavours: typeof elfWorldELiquidFlavours;
       stockQuantity: number;
+      isBestseller?: boolean;
     }) {
       const priceCents = Math.round(priceEuro * 100);
 
@@ -539,6 +551,7 @@ async function seed() {
           name,
           type: ProductType.LIQUID,
           imageUrl: imageUrl ?? null,
+          isBestseller,
           liquidSpec: {
             create: {
               bottleMl,
@@ -576,6 +589,7 @@ async function seed() {
       flavours: elfWorldELiquidFlavours,
       imageUrl:
         "https://image.made-in-china.com/2f0j00eMiVbSpynHUz/Elf-World-Nicotine-Salt-Vape-Juice-10ml-30ml-0-2-5-0mg-20mg-50mg-60mg-Customizable-ODM-OEM.webp",
+      isBestseller: true,
     });
     //#endregion
 
