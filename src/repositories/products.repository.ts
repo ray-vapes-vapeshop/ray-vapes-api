@@ -51,6 +51,43 @@ export class ProductsRepository {
     return await this.productsRepository.count({ where });
   }
 
+  async getProductById(productId: string) {
+    return await this.productsRepository.findUnique({
+      where: { id: productId },
+      include: {
+        priceTiers: true,
+        stockItems: true,
+        electronicSpec: {
+          include: {
+            variants: {
+              include: {
+                flavour: true,
+              },
+            },
+          },
+        },
+        liquidSpec: {
+          include: {
+            variants: {
+              include: {
+                flavour: true,
+              },
+            },
+          },
+        },
+        snusSpec: {
+          include: {
+            variants: {
+              include: {
+                flavour: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
   private productsSearchFilter(query: Partial<ProductsQueryDto>) {
     return new ProductsFilterBuilder()
       .typeFilter(query.type)
