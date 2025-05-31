@@ -6,6 +6,8 @@ import { catchHandler } from "../middlewares/catch.middleware";
 import { timeConstant } from "../constants/time.constant";
 import { ProductsController } from "../controllers/products.controller";
 import { ProductsQuerySchema } from "../validators/products-query.validator";
+import { UuidParamSchema } from "../validators/uuid-param.schema";
+import { mapParam } from "../mappers/param.mapper";
 
 export const ProductsRouter = Router();
 
@@ -73,4 +75,48 @@ ProductsRouter.get(
   validate(ProductsQuerySchema),
   limiter(timeConstant.FIVE_SECONDS, 1, true),
   catchHandler(productsController.getProducts.bind(productsController)),
+);
+
+/**
+ * @swagger
+ * /api/products/{productId}:
+ *   get:
+ *     tags: [Products]
+ *     description: Retrieves a product by its id.
+ *     parameters:
+ *       - in: path
+ *         name: productId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: product uuid
+ *     responses:
+ *       200:
+ *         description: Successful response with product data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Product'
+ *             examples:
+ *               ElectronicCigaretteExample:
+ *                 $ref: '#/components/examples/ElectronicCigarette'
+ *       400:
+ *         description: Invalid product id format.
+ *       404:
+ *         description: Product not found.
+ *       500:
+ *         description: Internal server error.
+ */
+ProductsRouter.get(
+  "/:productId",
+  mapParam("productId", "id"),
+  validate(UuidParamSchema),
+  limiter(timeConstant.FIVE_SECONDS, 1, true),
+  catchHandler(productsController.getProductById.bind(productsController)),
 );
