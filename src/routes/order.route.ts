@@ -81,3 +81,47 @@ OrderRouter.get(
   limiter(timeConstant.FIVE_SECONDS, 1, true),
   catchHandler(orderController.getOrdersByFilter.bind(orderController)),
 );
+
+/**
+ * @swagger
+ * /api/orders/{orderId}:
+ *   get:
+ *     tags: [Orders]
+ *     description: Retrieves a order by its id.
+ *     parameters:
+ *       - in: path
+ *         name: orderId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: order uuid
+ *     responses:
+ *       200:
+ *         description: Successful response with order data.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/CurrentOrder'
+ *             examples:
+ *               OrderExample:
+ *                 $ref: '#/components/examples/OrderExample'
+ *       400:
+ *         description: Invalid product id format.
+ *       404:
+ *         description: Product not found.
+ *       500:
+ *         description: Internal server error.
+ */
+OrderRouter.get(
+  "/:orderId",
+  mapParam("orderId", "id"),
+  validate(UuidParamSchema),
+  limiter(timeConstant.FIVE_SECONDS, 1, true),
+  catchHandler(orderController.getOrderById.bind(orderController)),
+);
