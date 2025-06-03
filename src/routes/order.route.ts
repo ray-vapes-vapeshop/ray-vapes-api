@@ -125,3 +125,44 @@ OrderRouter.get(
   limiter(timeConstant.FIVE_SECONDS, 1, true),
   catchHandler(orderController.getOrderById.bind(orderController)),
 );
+
+/**
+ * @swagger
+ * /api/orders:
+ *   post:
+ *     tags: [Orders]
+ *     description: Creates a new order with the provided cart items.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               $ref: '#/components/schemas/CreateOrder'
+ *     responses:
+ *       201:
+ *         description: Order created successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     $ref: '#/components/schemas/CurrentOrder'
+ *       400:
+ *         description: Invalid input data.
+ *       500:
+ *         description: Internal server error.
+ */
+OrderRouter.post(
+  "/",
+  validate(CreateOrderSchema), // ! this schema is empty, it should be updated next
+  limiter(timeConstant.TEN_SECONDS, 1, true),
+  catchHandler(orderController.createOrder.bind(orderController)),
+);
