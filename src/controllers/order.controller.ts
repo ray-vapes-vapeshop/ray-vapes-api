@@ -15,4 +15,12 @@ export class OrderController {
 
     res.json(new SuccessResponseDto(orders));
   }
+
+  async getOrderById(req: Request, res: Response) {
+    const orderId = req.params["id"];
+
+    const order = await this.orderService.getOrderById(orderId!);
+
+    res.json(new SuccessResponseDto(order));
+  }
 }
