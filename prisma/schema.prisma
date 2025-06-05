@@ -19,6 +19,16 @@ enum FlavourMode {
   THREE_IN_ONE
 }
 
+enum OrderMethod {
+  PICKUP
+  DELIVERY
+  EXPRESS
+  PICKUP_POINT
+  COURIER_DELIVERY
+  POST_OFFICE_DELIVERY
+  INTERNATIONAL_DELIVERY
+}
+
 enum OrderStatus {
   PENDING
   PROCESSING
@@ -208,6 +218,8 @@ model Order {
   telegramNickname String      @map("telegram_nickname")
   priceCents       Int         @map("price_cents")
   orderStatus      OrderStatus @default(PENDING) @map("order_status")
+  orderMethod      OrderMethod @map("order_method")
+  pickupLocation   String?     @map("pickup_location")
   phoneNumber      String?     @map("phone_number")
   deliveryNotes    String?     @map("delivery_notes")
 
