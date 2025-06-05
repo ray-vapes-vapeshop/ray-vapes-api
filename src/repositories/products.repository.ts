@@ -51,7 +51,7 @@ export class ProductsRepository {
     return await this.productsRepository.count({ where });
   }
 
-  async getProductById(productId: string) {
+  async getProductWithRelationsById(productId: string) {
     return await this.productsRepository.findUnique({
       where: { id: productId },
       include: {
@@ -85,6 +85,12 @@ export class ProductsRepository {
           },
         },
       },
+    });
+  }
+
+  async getProductById(productId: string) {
+    return await this.productsRepository.findUnique({
+      where: { id: productId },
     });
   }
 
