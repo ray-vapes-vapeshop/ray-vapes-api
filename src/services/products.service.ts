@@ -22,7 +22,7 @@ export class ProductsService {
   }
 
   async getProductById(productId: string) {
-    const product = await this.productsRepository.getProductById(productId);
+    const product = await this.productsRepository.getProductWithRelationsById(productId);
 
     if (!product) {
       throw new NotFound(errorConstant.NOT_FOUND);
