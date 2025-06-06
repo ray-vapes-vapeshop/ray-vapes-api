@@ -1,4 +1,14 @@
-import { z as zod } from "zod";
-import { OrdersQuerySchema } from "../validators/orders-query.validator";
+import { OrderStatus } from "@prisma/client";
 
-export type OrdersQueryDto = zod.infer<typeof OrdersQuerySchema>;
+export class OrdersQueryDto {
+  currentPage!: number;
+  pageSize!: number;
+  sortBy!: Record<string, "asc" | "desc">;
+  search?: string | undefined;
+  location?: string | undefined;
+  orderStatus?: OrderStatus | undefined;
+  minPriceCents?: number | undefined;
+  maxPriceCents?: number | undefined;
+  dateFrom?: Date | undefined;
+  dateTo?: Date | undefined;
+}
