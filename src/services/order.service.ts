@@ -5,6 +5,8 @@ import { OrdersQueryDto } from "../dtos/orders-query.dto";
 import { OrderRepository } from "../repositories/order.repository";
 import errorConstant from "../constants/error.constant";
 import { ProductsRepository } from "../repositories/products.repository";
+import { PageRequest } from "../utils/page-request.util";
+import { PageResponse } from "../utils/page-response.util";
 
 export class OrderService {
   constructor(
@@ -13,7 +15,14 @@ export class OrderService {
   ) {}
 
   async getOrdersByFilter(ordersQuery: OrdersQueryDto) {
-    console.log(ordersQuery);
+    const pageRequest = new PageRequest(ordersQuery);
+
+    const [orders, count] = await Promise.all([
+      this.orderRepository.getOrdersByFilter(ordersQuery, pageRequest),
+      this.orderRepository.getCountOrdersByFilter(ordersQuery),
+    ]);
+
+    return new PageResponse(pageRequest, orders, count);
   }
 
   async getOrderById(orderId: string) {
