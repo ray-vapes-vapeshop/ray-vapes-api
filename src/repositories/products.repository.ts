@@ -94,6 +94,14 @@ export class ProductsRepository {
     });
   }
 
+  async getProductsByIds(productIds: string[]) {
+    return await this.productsRepository.findMany({
+      where: {
+        id: { in: productIds },
+      },
+    });
+  }
+
   private productsSearchFilter(query: Partial<ProductsQueryDto>) {
     return new ProductsFilterBuilder()
       .typeFilter(query.type)
