@@ -10,7 +10,7 @@ import { UuidParamSchema } from "../validators/uuid-param.schema";
 import { CreateOrderSchema } from "../validators/create-order.validator";
 import { mapParam } from "../mappers/param.mapper";
 
-export const OrderRouter = Router();
+export const OrdersRouter = Router();
 
 const orderController = new OrderController();
 
@@ -25,6 +25,7 @@ const orderController = new OrderController();
  * @swagger
  * /api/orders:
  *   get:
+ *     summary: Get orders by filter
  *     tags: [Orders]
  *     description: Retrieves a list of orders based on the provided query parameters, pagination and filtering.
  *     parameters:
@@ -69,13 +70,13 @@ const orderController = new OrderController();
  *                     items:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/CurrentOrder'
+ *                         $ref: '#/components/schemas/Order'
  *       400:
  *         description: Invalid query parameters.
  *       500:
  *         description: Internal server error.
  */
-OrderRouter.get(
+OrdersRouter.get(
   "/",
   validate(OrdersQuerySchema),
   limiter(timeConstant.FIVE_SECONDS, 1, true),
@@ -86,6 +87,7 @@ OrderRouter.get(
  * @swagger
  * /api/orders/{orderId}:
  *   get:
+ *     summary: Get order with relations by id
  *     tags: [Orders]
  *     description: Retrieves a order by its id.
  *     parameters:
@@ -107,7 +109,7 @@ OrderRouter.get(
  *                   type: boolean
  *                   example: true
  *                 data:
- *                   $ref: '#/components/schemas/CurrentOrder'
+ *                   $ref: '#/components/schemas/Order'
  *             examples:
  *               OrderExample:
  *                 $ref: '#/components/examples/OrderExample'
@@ -118,7 +120,7 @@ OrderRouter.get(
  *       500:
  *         description: Internal server error.
  */
-OrderRouter.get(
+OrdersRouter.get(
   "/:orderId",
   mapParam("orderId", "id"),
   validate(UuidParamSchema),
@@ -130,6 +132,7 @@ OrderRouter.get(
  * @swagger
  * /api/orders:
  *   post:
+ *     summary: Create a new order
  *     tags: [Orders]
  *     description: Creates a new order with the provided cart items.
  *     requestBody:
@@ -137,9 +140,7 @@ OrderRouter.get(
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               $ref: '#/components/schemas/CreateOrder'
+ *             $ref: '#/components/schemas/CreateOrder'
  *     responses:
  *       201:
  *         description: Order created successfully.
@@ -152,17 +153,15 @@ OrderRouter.get(
  *                   type: boolean
  *                   example: true
  *                 data:
- *                   type: object
- *                   properties:
- *                     $ref: '#/components/schemas/CurrentOrder'
+ *                   $ref: '#/components/schemas/Order'
  *       400:
  *         description: Invalid input data.
  *       500:
  *         description: Internal server error.
  */
-OrderRouter.post(
+OrdersRouter.post(
   "/",
-  validate(CreateOrderSchema), // ! this schema is empty, it should be updated next
+  validate(CreateOrderSchema),
   limiter(timeConstant.TEN_SECONDS, 1, true),
   catchHandler(orderController.createOrder.bind(orderController)),
 );
