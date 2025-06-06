@@ -584,7 +584,7 @@ async function seed() {
       name: "ELF WORLD E-LIQUID 30ML",
       bottleMl: 30,
       nicotinePct: 5,
-      priceEuro: 10,
+      priceEuro: 15,
       stockQuantity: 200,
       flavours: elfWorldELiquidFlavours,
       imageUrl:

@@ -19,6 +19,24 @@ enum FlavourMode {
   THREE_IN_ONE
 }
 
+enum OrderMethod {
+  PICKUP
+  DELIVERY
+  EXPRESS
+  PICKUP_POINT
+  COURIER_DELIVERY
+  POST_OFFICE_DELIVERY
+  INTERNATIONAL_DELIVERY
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
 enum ProductType {
   ELECTRONIC_CIGARETTE
   CIGARETTE
@@ -50,6 +68,7 @@ model Product {
 
   priceTiers PriceTier[]
   stockItems StockItem[]
+  OrderItem  OrderItem[]
 
   @@index([name])
   @@map("products")
@@ -188,4 +207,44 @@ model Flavour {
 
   @@index([name])
   @@map("flavours")
+}
+
+model Order {
+  id               String      @id @default(uuid()) @db.Uuid
+  firstName        String      @map("first_name")
+  lastName         String      @map("last_name")
+  address          String
+  email            String
+  telegramNickname String      @map("telegram_nickname")
+  priceCents       Int         @map("price_cents")
+  orderStatus      OrderStatus @default(PENDING) @map("order_status")
+  orderMethod      OrderMethod @map("order_method")
+  pickupLocation   String?     @map("pickup_location")
+  phoneNumber      String?     @map("phone_number")
+  deliveryNotes    String?     @map("delivery_notes")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  items OrderItem[]
+
+  @@index([firstName, lastName])
+  @@map("orders")
+}
+
+model OrderItem {
+  id         String @id @default(uuid()) @db.Uuid
+  orderId    String @map("order_id") @db.Uuid
+  productId  String @map("product_id") @db.Uuid
+  quantity   Int
+  priceCents Int    @map("price_cents")
+
+  variantId String? @map("variant_id") @db.Uuid
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
 }
