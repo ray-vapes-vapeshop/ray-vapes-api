@@ -94,7 +94,11 @@ async function seed() {
       "Blueberry Sour Raspberry + Cherry",
     ];
 
-    const flavoursBangKing = ["Red bull-Strawberry Banana", "Watermelon-Blueberry Cherry"];
+    const flavoursBangKing = [
+      "Red bull + Strawberry Banana",
+      "Watermelon + Blueberry Cherry",
+      "Blueberry Raspberry + Mixed Berry",
+    ];
 
     const flavoursZOOYVape = [
       "Strawberry, banana & Grape, mint",
