@@ -21,7 +21,7 @@ export const CreateOrderSchema = zod.object({
           productId: zod.string().uuid(validationConstant.INVALID_UUID_FORMAT),
           quantity: zod.number().int().positive(validationConstant.MUST_BE_POSITIVE),
           priceCents: zod.number().int().positive(validationConstant.MUST_BE_POSITIVE),
-          variantId: zod.string().uuid(validationConstant.INVALID_UUID_FORMAT).nullable(),
+          variantId: zod.string().uuid(validationConstant.INVALID_UUID_FORMAT).optional(),
         }),
       )
       .nonempty(validationConstant.AT_LEAST_ONE_ITEM_REQUIRED),
