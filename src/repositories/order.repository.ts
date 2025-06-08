@@ -15,7 +15,19 @@ export class OrderRepository {
       where,
       ...pageRequest.getFilter(),
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              select: {
+                name: true,
+                type: true,
+                description: true,
+                imageUrl: true,
+                isBestseller: true,
+              },
+            },
+          },
+        },
       },
     };
 
@@ -39,7 +51,19 @@ export class OrderRepository {
         id: orderId,
       },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              select: {
+                name: true,
+                type: true,
+                description: true,
+                imageUrl: true,
+                isBestseller: true,
+              },
+            },
+          },
+        },
       },
     });
   }
@@ -66,7 +90,19 @@ export class OrderRepository {
         },
       },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              select: {
+                name: true,
+                type: true,
+                description: true,
+                imageUrl: true,
+                isBestseller: true,
+              },
+            },
+          },
+        },
       },
     });
   }

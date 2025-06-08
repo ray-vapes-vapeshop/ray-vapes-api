@@ -70,7 +70,7 @@ const orderController = new OrderController();
  *                     items:
  *                       type: array
  *                       items:
- *                         $ref: '#/components/schemas/Order'
+ *                         $ref: '#/components/schemas/OrderExample'
  *       400:
  *         description: Invalid query parameters.
  *       500:
@@ -109,10 +109,7 @@ OrdersRouter.get(
  *                   type: boolean
  *                   example: true
  *                 data:
- *                   $ref: '#/components/schemas/Order'
- *             examples:
- *               OrderExample:
- *                 $ref: '#/components/examples/OrderExample'
+ *                   $ref: '#/components/schemas/OrderExample'
  *       400:
  *         description: Invalid product id format.
  *       404:
@@ -153,7 +150,7 @@ OrdersRouter.get(
  *                   type: boolean
  *                   example: true
  *                 data:
- *                   $ref: '#/components/schemas/Order'
+ *                   $ref: '#/components/schemas/OrderExample'
  *       400:
  *         description: Invalid input data.
  *       500:
