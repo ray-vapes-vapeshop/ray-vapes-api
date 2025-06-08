@@ -112,6 +112,29 @@ export class OrderService {
       throw new NotFound(errorConstant.PRODUCTS_NOT_FOUND);
     }
 
-    return await this.orderRepository.createOrder(createOrderDto);
+    const order = await this.orderRepository.createOrder(createOrderDto);
+
+    const orderWithResolvedVariants = {
+      ...order,
+      items: await Promise.all(
+        (order as OrderWithRelations).items.map(async (item: OrderItemWithRelations) => {
+          const variant = await this.variantResolver.resolveVariant(item);
+          return {
+            ...item,
+            product: {
+              ...item.product,
+              variant: variant
+                ? {
+                    id: variant.id,
+                    flavour: variant.flavour,
+                  }
+                : null,
+            },
+          };
+        }),
+      ),
+    };
+
+    return orderWithResolvedVariants;
   }
 }

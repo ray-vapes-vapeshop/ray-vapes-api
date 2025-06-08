@@ -90,7 +90,19 @@ export class OrderRepository {
         },
       },
       include: {
-        items: true,
+        items: {
+          include: {
+            product: {
+              select: {
+                name: true,
+                type: true,
+                description: true,
+                imageUrl: true,
+                isBestseller: true,
+              },
+            },
+          },
+        },
       },
     });
   }
