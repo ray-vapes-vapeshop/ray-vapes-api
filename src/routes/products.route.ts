@@ -73,7 +73,7 @@ const productsController = new ProductsController();
 ProductsRouter.get(
   "/",
   validate(ProductsQuerySchema),
-  limiter(timeConstant.FIVE_SECONDS, 1, true),
+  limiter(timeConstant.ONE_SECOND, 3, true),
   catchHandler(productsController.getProducts.bind(productsController)),
 );
 
@@ -117,6 +117,6 @@ ProductsRouter.get(
   "/:productId",
   mapParam("productId", "id"),
   validate(UuidParamSchema),
-  limiter(timeConstant.FIVE_SECONDS, 1, true),
+  limiter(timeConstant.ONE_SECOND, 3, true),
   catchHandler(productsController.getProductById.bind(productsController)),
 );
