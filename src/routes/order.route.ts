@@ -79,7 +79,7 @@ const orderController = new OrderController();
 OrdersRouter.get(
   "/",
   validate(OrdersQuerySchema),
-  limiter(timeConstant.FIVE_SECONDS, 1, true),
+  limiter(timeConstant.ONE_SECOND, 3, true),
   catchHandler(orderController.getOrdersByFilter.bind(orderController)),
 );
 
@@ -121,7 +121,7 @@ OrdersRouter.get(
   "/:orderId",
   mapParam("orderId", "id"),
   validate(UuidParamSchema),
-  limiter(timeConstant.FIVE_SECONDS, 1, true),
+  limiter(timeConstant.ONE_SECOND, 3, true),
   catchHandler(orderController.getOrderById.bind(orderController)),
 );
 
@@ -159,6 +159,6 @@ OrdersRouter.get(
 OrdersRouter.post(
   "/",
   validate(CreateOrderSchema),
-  limiter(timeConstant.TEN_SECONDS, 1, true),
+  limiter(timeConstant.ONE_SECOND, 3, true),
   catchHandler(orderController.createOrder.bind(orderController)),
 );
