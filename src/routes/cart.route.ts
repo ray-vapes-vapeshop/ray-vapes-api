@@ -46,7 +46,7 @@ const cartController = new CartController();
  */
 CartRouter.get(
   "/",
-  limiter(timeConstant.FIVE_SECONDS, 1, true),
+  limiter(timeConstant.ONE_SECOND, 3, true),
   catchHandler(cartController.getCartContents.bind(cartController)),
 );
 
@@ -85,7 +85,7 @@ CartRouter.get(
 CartRouter.post(
   "/",
   validate(AddToCartSchema),
-  limiter(timeConstant.FIVE_SECONDS, 1, true),
+  limiter(timeConstant.ONE_SECOND, 3, true),
   catchHandler(cartController.addToCart.bind(cartController)),
 );
 
@@ -140,7 +140,7 @@ CartRouter.patch(
   "/:productId",
   mapParam("productId", "id"),
   validate(UuidParamSchema),
-  limiter(timeConstant.FIVE_SECONDS, 1, true),
+  limiter(timeConstant.ONE_SECOND, 3, true),
   catchHandler(cartController.updateCart.bind(cartController)),
 );
 
@@ -172,7 +172,7 @@ CartRouter.patch(
  */
 CartRouter.delete(
   "/",
-  limiter(timeConstant.FIVE_SECONDS, 1, true),
+  limiter(timeConstant.ONE_SECOND, 3, true),
   catchHandler(cartController.removeAllFromCart.bind(cartController)),
 );
 
@@ -218,6 +218,6 @@ CartRouter.delete(
   "/:productId",
   mapParam("productId", "id"),
   validate(UuidParamSchema),
-  limiter(timeConstant.FIVE_SECONDS, 1, true),
+  limiter(timeConstant.ONE_SECOND, 3, true),
   catchHandler(cartController.removeProductFromCart.bind(cartController)),
 );
