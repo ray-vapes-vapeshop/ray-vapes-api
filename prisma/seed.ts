@@ -94,11 +94,7 @@ async function seed() {
       "Blueberry Sour Raspberry + Cherry",
     ];
 
-    const flavoursBangKing = [
-      "Red bull + Strawberry Banana",
-      "Watermelon + Blueberry Cherry",
-      "Blueberry Raspberry + Mixed Berry",
-    ];
+    const flavoursBangKing = ["Red bull + Strawberry Banana", "Watermelon + Blueberry Cherry"];
 
     const flavoursZOOYVape = [
       "Strawberry, banana & Grape, mint",
@@ -137,7 +133,6 @@ async function seed() {
       "Frozen Strawberry Kiwi",
       "Dragon Fruit Banana Cherry",
       "Cherry Ice",
-      "Blueberry Watermelon",
     ];
 
     const elfBarRayaFlavours = await upsertFlavours(flavoursElfBarRaya);
