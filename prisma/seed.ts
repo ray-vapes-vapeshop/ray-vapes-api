@@ -5,8 +5,7 @@ const prisma = new PrismaClient();
 async function seed() {
   try {
     //#region Sigarettes seeding
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const winston = await prisma.product.create({
+    await prisma.product.create({
       data: {
         name: "Winston blue",
         type: ProductType.CIGARETTE,
