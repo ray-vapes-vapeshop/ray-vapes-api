@@ -221,8 +221,7 @@ async function seed() {
 
     await createElectronicProduct({
       name: "Vozol vista 20k",
-      imageUrl:
-        "https://cdn.smoketime.com.ua/products/posters/vozol-vista-20000-vzbull-kholodniy-energetik.jpg",
+      imageUrl: "https://api.hookahspace.net/wp-content/uploads/2024/05/26186.jpg",
       puffs: 20000,
       nicotinePct: 5,
       chargingType: ChargingType.TYPE_C,
